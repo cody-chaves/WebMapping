@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <title>University of Oregon Mapping</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--    Include the reference to the Mapbox JavaScript here in the <head> of the page  (Part I.1)  -->
+    
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css' rel='stylesheet' />
+
+          
+    <!--    Include the reference to the Mapbox CSS here in between <head> tags    (Part I.2) -->
+    
+      <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js'></script>
+
+    <style>
+        /* Insert the additional CSS code here between the <style> tags  (Part I.4)   */
+        
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+
+
+    </style>
+  </head>
+
+  <body>
+    <!--  Insert the map div here in the <body> of the page  (Part I)  -->
+   
+      <div id='map'></div>
+
+    <script>
+        // Insert the JavaScript within the <script> tags, within the body   
+        // Start with the Mapbox access token here (Part 2.1)
+          
+          mapboxgl.accessToken = 'pk.eyJ1IjoiY29keS1jaGF2ZXMiLCJhIjoiY21uZjZtbXlnMDcyeDJ2b3B3MjN2OGJ1aSJ9.4jke3lFyjjjJiGEQyL_r1A';
+   
+        // Then initialize the map here (Part 2.2)
+
+        var map = new mapboxgl.Map({
+            container: 'map', // id of a div on your page, where the map will be inserted
+            style: 'mapbox://styles/cody-chaves/cmoeo9fon00ii01se7pp84rp7', // stylesheet location
+            center: [-144, 55], // set to Gulf of Alaska
+            zoom: 3 // Show Alaska and Pacific Northwest
+          });
+        
+    </script>
+
+  </body>
+
+</html>
