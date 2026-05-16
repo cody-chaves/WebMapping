@@ -37,7 +37,7 @@
             display: inline-block; /* displays over the map */
             position: relative; /* displays over the map */
             margin: 0px auto; 
-            width: 30%;  /* width of parent div */
+            width: 24%;  /* width of parent div, changed to allow foruth button */
             padding: 10px;
             border-style: solid;
             border-color: oldlace;
@@ -46,7 +46,7 @@
             text-align: center;
             font-weight: bold;
             color: oldlace;
-            background: DarkRed;
+            background: darkblue;
             cursor:pointer;
         }
         
@@ -75,6 +75,7 @@
             <button class='fly' id='PortlandButton'>Jump to Portland</button>
             <button class='fly' id='LondonButton'>Jump to London</button>
             <button class='fly' id='YellowstoneButton'>Jump to Yellowstone</button> 
+            <button class='fly' id='SopranosButton'>Jump to Sopranos House</button>
 
 
     <script>
@@ -116,11 +117,20 @@
             var popup3_content = '<h2>Press play to listen to a bison eating</h2><br>';   
             popup3_content += '<audio controls><source src="sounds/yell-YELLBisonEating150313.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio>';
             popup3_content += 'Source: NPS/Jennifer Jerret, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';
-            popup3_content += '<img class="popupImage" alt="Photo of a herd of bison standing around a river in the snow at Yellowstone"  src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1300&maxheight=1300&autorotate=false&format=webp">' ;
+            popup3_content += '<img class="popupImage" alt="herd of bison standing around a river in the snow"  src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1300&maxheight=1300&autorotate=false&format=webp">' ;
             popup3_content += 'Source: NPS/Neal Herbert, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';
                     
             var popup3 = new mapboxgl.Popup({ minWidth:'300px' })
                 .setHTML(popup3_content);
+
+            // Popup for 4
+            var popup4_content = '<h2>Play video to watch Sopranos intro</h2><br>';
+            popup4_content += 
+            popup4_content += '<iframe width="300px" src="https://www.youtube.com/embed/watch?v=mJpNmYeooQE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            popup4_content += 'Source: HBO, <a href="https://www.youtube.com/embed/watch?v=mJpNmYeooQE">YouTube</a>';     
+
+            var popup4 = new mapboxgl.Popup({ minWidth:'300px' })
+                .setHTML(popup4_content);
 
             /***  END POPUPS  ***/ 
 
@@ -135,7 +145,7 @@
 
                     /***  MARKERS  ***/
             // Marker 1 - Portland
-            var marker1 = new mapboxgl.Marker({color:'DarkRed'})
+            var marker1 = new mapboxgl.Marker({color:'DarkBlue'})
                 .setLngLat([-122.6788,45.5212]) // Portland 
             //add .setPopup here
                 .setPopup(popup1)
@@ -143,19 +153,23 @@
 
                 
             // Marker 2 - London 
-            var marker2 = new mapboxgl.Marker({color:'DarkRed'})
+            var marker2 = new mapboxgl.Marker({color:'DarkBlue'})
             .setLngLat([-0.1534307, 51.501223]) // London 
             .setPopup(popup2)
             .addTo(map);
 
                 
             // Marker 3 - Yellowstone
-            var marker3 = new mapboxgl.Marker({color:'DarkRed'})
+            var marker3 = new mapboxgl.Marker({color:'DarkBlue'})
             .setLngLat([-110.74524187568,44.706216445069]) // Yellowstone
             .setPopup(popup3)
             .addTo(map);
 
-
+            // marker 4
+            var marker4 = new mapboxgl.Marker({color:'DarkBlue'})
+            .setLngLat([-74.245278, 40.868022]) // sopranos house
+            .setPopup(popup4)
+            .addTo(map);            
 
                 /***  END MARKERS  ***/
 
@@ -183,6 +197,13 @@
             document.getElementById('YellowstoneButton').addEventListener('click', function () {
                     map.jumpTo({
                         center:[-110.74524187568,44.706216445069], 
+                        zoom: 9
+                    });
+            });
+
+            document.getElementById('SopranosButton').addEventListener('click', function () {
+                    map.jumpTo({
+                        center:[-74.245278, 40.868022], 
                         zoom: 9
                     });
             });
