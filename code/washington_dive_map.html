@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Washington Dive Sites and Dive Shops</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+<style>
+    /* Filter toggle - from example_point_selection.html */
+    .filter-group {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font-weight: 600;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+        border-radius: 3px;
+        width: 120px;
+        color: #fff;
+    }
+
+    .filter-group input[type='checkbox']:first-child + label {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .filter-group label:last-child {
+        border-radius: 0 0 3px 3px;
+        border: none;
+    }
+
+    .filter-group input[type='checkbox'] {
+        display: none;
+    }
+
+    .filter-group input[type='checkbox'] + label {
+        background-color: #70b0dd;
+        display: block;
+        cursor: pointer;
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .filter-group input[type='checkbox'] + label {
+        background-color: #3386c0;
+        text-transform: capitalize;
+    }
+
+    .filter-group input[type='checkbox'] + label:hover,
+    .filter-group input[type='checkbox']:checked + label {
+        background-color: #4ea0da;
+    }
+
+    .filter-group input[type='checkbox']:checked + label:before {
+        content: '✔';
+        margin-right: 5px;
+    }
+
+    /* Custom marker styles - from Custon_marker_example.html */
+    .marker-dive-site {
+        background-image: url('images/diver.png');
+        background-size: cover;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .marker-dive-shop {
+        background-image: url('images/store.png');
+        background-size: cover;
+        width: 22px;
+        height: 22px;
+        border-radius: 10%;
+        cursor: pointer;
+    }
+
+    /* Used by the checkbox toggle to hide markers - classList pattern from Custon_marker_example.html */
+    .hidden {
+        display: none;
+    }
+
+    .mapboxgl-popup {
+        max-width: 200px;
+    }
+
+    .mapboxgl-popup-content {
+        text-align: center;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    p {
+        color: white;
+    }
+
+    h4 {
+        color: white;
+        margin-left: 10px;
+    }
+
+    .descriptionPanel {
+        position: absolute;
+        bottom: 65px;
+        right: 10px;
+        z-index: 2;
+        width: 300px;
+        height: 40px;
+        background: rgba(80, 80, 80, .75);
+        transition: width 2s, height 2s;
+        overflow: hidden;
+        border-radius: 7px;
+    }
+
+    .chevron {
+        position: relative;
+        margin-left: 45%;
+        font-size: x-large;
+        color: white;
+    }
+
+    .LegendContainer {
+        position: absolute;
+        bottom: 20px;
+        right: 10px;
+        z-index: 2;
+        width: 300px;
+        height: 40px;
+        background: rgba(80, 80, 80, .75);
+        border-radius: 7px;
+    }
+
+    .legendItem {
+        margin: 0px;
+        padding-left: 10px;
+        display: inline-block;
+        margin: auto;
+        transform: translate(50%, 50%);
+    }
+
+    .layerDescription {
+        color: white;
+        padding-left: 10px;
+    }
+</style>
+
+<div id="map"></div>
+
+<!-- add filter group nav here -->
+<nav id="filter-group" class="filter-group"></nav>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY29keS1jaGF2ZXMiLCJhIjoiY21uZjZtbXlnMDcyeDJ2b3B3MjN2OGJ1aSJ9.4jke3lFyjjjJiGEQyL_r1A';
+
+    // ADD THE DATA HERE
+    // Each feature has an "icon" property set to either "dive-site" or "dive-shop".
+    // This value is used to group features into two toggleable layers.
+    var places = {
+        "type": "FeatureCollection",
+        "features": [
+
+            // --- DIVE SITES ---
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.408947, 47.582547] }, "properties": { "icon": "dive-site", "Name": "Alki Beach Junkyard", "City": "Seattle", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.493155971164, 47.5291835519606] }, "properties": { "icon": "dive-site", "Name": "Blake Island Marine State Park", "City": "Blake Island", "Access": "Boat", "Skill": "Advanced", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Boat dive, Orca Pass" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.481126180958, 47.2836056328394] }, "properties": { "icon": "dive-site", "Name": "Les Davis Public Fishing Pier", "City": "Tacoma", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.489493115342, 47.2879006569051] }, "properties": { "icon": "dive-site", "Name": "Lobster Shop Reef Site", "City": "Tacoma", "Access": "Shore", "Skill": "Advanced", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.012355302941, 47.5706280974929] }, "properties": { "icon": "dive-site", "Name": "Mike's Beach Resort", "City": "Hoodsport", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Beach Resort" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.30261266986, 47.9494383530126] }, "properties": { "icon": "dive-site", "Name": "Mukilteo T Dock", "City": "Mukilteo", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.323327253972, 47.3490866735973] }, "properties": { "icon": "dive-site", "Name": "Redondo Beach", "City": "Des Moines", "Access": "Shore", "Skill": "Beginner", "Hazards": "wind, waves", "Fees": "Yes", "Fees_Desc": "Hourly Parking" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.611940113493, 47.1688337311465] }, "properties": { "icon": "dive-site", "Name": "Saltar's Point Stelicoom Marina", "City": "Stelicoom", "Access": "Shore", "Skill": "Intermediate", "Hazards": "current, entanglement", "Fees": "Unknown", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.321600052122, 47.3741534864071] }, "properties": { "icon": "dive-site", "Name": "Saltwater State Park", "City": "Des Moines", "Access": "Shore", "Skill": "Intermediate", "Hazards": "current", "Fees": "Yes", "Fees_Desc": "Discover Pass" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.37686534342, 47.5873542341447] }, "properties": { "icon": "dive-site", "Name": "Seacrest Cove 1", "City": "Seattle", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.379642650273, 47.588783858592] }, "properties": { "icon": "dive-site", "Name": "Seacrest Cove 2", "City": "Seattle", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.120155394451, 47.4346011019208] }, "properties": { "icon": "dive-site", "Name": "Sund Rock", "City": "Hoodsport", "Access": "Shore", "Skill": "Intermediate", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Private Property" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.590855691488, 47.1769081411819] }, "properties": { "icon": "dive-site", "Name": "Sunnyside Beach Park", "City": "Stelicoom", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Paid Parking" } },
+
+            // --- DIVE SHOPS ---
+            // Replace coordinates and properties with verified shop data
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3321, 47.6062] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Seattle", "Phone": "", "Website": "" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.1968, 47.5944] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Bellevue", "Phone": "", "Website": "" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3073, 47.8209] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Lynnwood", "Phone": "", "Website": "" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.4443, 47.2529] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Tacoma", "Phone": "", "Website": "" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.4307, 48.1184] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Port Angeles", "Phone": "", "Website": "" } }
+        ]
+    }
+
+    var filterGroup = document.getElementById('filter-group');
+    var bounds = [
+        [-124.849, 45.543], // Southwest coordinates
+        [-116.916, 49.003]  // Northeast coordinates
+    ];
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/cody-chaves/cmpejzuik001601sn9djz0r7e',
+        center: [-122.5, 47.5],
+        zoom: 7,
+        minZoom: 5.5,
+        maxBounds: bounds
+    });
+
+    // Store markers by type so the checkboxes can show/hide them
+    var markerGroups = { 'dive-site': [], 'dive-shop': [] };
+
+    // Track which checkbox types have already been added to the filter group
+    var seenSymbols = {};
+
+    // Add markers to map, from the geojson file - from Custon_marker_example.html
+    for (const feature of places.features) {
+        const symbol = feature.properties['icon'];
+        const props = feature.properties;
+
+        // create a HTML element for this feature
+        const el = document.createElement('div');
+        el.className = symbol === 'dive-site' ? 'marker-dive-site' : 'marker-dive-shop';
+
+        // build popup content based on feature type
+        var description;
+        if (symbol === 'dive-site') {
+            description = '<strong>' + props.Name + '</strong>' +
+                '<br>City: ' + props.City +
+                '<br>Access: ' + props.Access +
+                '<br>Skill: ' + props.Skill +
+                '<br>Hazards: ' + props.Hazards +
+                '<br>Fees: ' + props.Fees_Desc;
+        } else {
+            description = '<strong>' + props.Name + '</strong>' +
+                '<br>City: ' + props.City +
+                '<br>Phone: ' + props.Phone +
+                '<br>Website: ' + props.Website;
+        }
+
+        // make a marker for each feature and add it to the map
+        const marker = new mapboxgl.Marker(el)
+            .setLngLat(feature.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(description))
+            .addTo(map);
+
+        markerGroups[symbol].push(marker);
+
+        // add hover class to each marker via DOM events - from Custon_marker_example.html
+        const markerElement = marker.getElement();
+
+        markerElement.addEventListener('mouseenter', () => {
+            markerElement.classList.add('hover');
+        });
+
+        markerElement.addEventListener('mouseleave', () => {
+            markerElement.classList.remove('hover');
+        });
+
+        // Add checkbox and label elements for this type if not already added - from example_point_selection.html
+        if (!seenSymbols[symbol]) {
+            seenSymbols[symbol] = true;
+
+            var input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = 'toggle-' + symbol;
+            input.checked = true;
+            filterGroup.appendChild(input);
+
+            var label = document.createElement('label');
+            label.setAttribute('for', 'toggle-' + symbol);
+            label.textContent = symbol;
+            filterGroup.appendChild(label);
+
+            // When the checkbox changes, add or remove the hidden class on each marker in the group
+            input.addEventListener('change', function (e) {
+                markerGroups[symbol].forEach(function (m) {
+                    if (e.target.checked) {
+                        m.getElement().classList.remove('hidden');
+                    } else {
+                        m.getElement().classList.add('hidden');
+                    }
+                });
+            });
+        }
+    }
+
+    map.on('zoomend', function() {
+        var z = map.getZoom();
+        var size;
+        if (z < 6)        size = '14px';
+        else if (z < 7)   size = '18px';
+        else if (z < 8)   size = '22px';
+        else if (z < 9)   size = '26px';
+        else if (z < 10)  size = '32px';
+        else if (z < 11)  size = '38px';
+        else if (z < 12)  size = '46px';
+        else if (z < 14)  size = '55px';
+        else              size = '70px';
+
+        ['dive-site', 'dive-shop'].forEach(function(type) {
+            markerGroups[type].forEach(function(marker) {
+                var el = marker.getElement();
+                el.style.width = size;
+                el.style.height = size;
+            });
+        });
+    });
+
+    map.on('zoom', function() {
+        console.log(map.getZoom());
+    });
+
+    var state = { panelOpen: true };
+
+    function panelSelect(e) {
+        if (state.panelOpen) {
+            document.getElementById('descriptionPanel').style.height = '26px';
+            document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-up";
+            state.panelOpen = false;
+        } else {
+            document.getElementById('descriptionPanel').style.height = '250px';
+            document.getElementById('glyph').className = "chevron glyphicon glyphicon-chevron-down";
+            state.panelOpen = true;
+        }
+    }
+
+</script>
+
+
+<!-- map legend -->
+<div class="LegendContainer">
+    <div class="legendItem">
+        <img src="images/diver.png" width="20" height="20">
+        <span class="layerDescription">Dive Site</span>
+    </div>
+    <div class="legendItem">
+        <img src="images/store.png" width="20" height="20">
+        <span class="layerDescription">Dive Shop</span>
+    </div>
+</div>
+
+<!-- map description panel -->
+<div class="descriptionPanel" id="descriptionPanel" style="height: 250px;">
+    <span onClick=panelSelect() id="glyph" class="chevron glyphicon glyphicon-chevron-down"></span>
+    <hr/>
+    <h4>WASHINGTON DIVE SITES</h4>
+    <p style="margin-left: 10px; margin-right: 10px;">
+        This map shows common dive sites and nearby dive shops in Washington State. Click a marker to see details including skill level, access type, and fees. Use the toggle in the top right to show or hide what you are looking for.
+    </p>
+</div>
+
+</body>
+</html>
