@@ -140,19 +140,98 @@
         height: 40px;
         background: rgba(80, 80, 100, .90);
         border-radius: 7px;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-btn-cell {
+        flex: 0 0 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .legendItem {
-        margin: 0px;
-        padding-left: 10px;
-        display: inline-block;
-        margin: auto;
-        transform: translate(50%, 50%);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .info-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 20px;
+        text-align: center;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .info-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .info-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: rgba(80, 80, 100, .95);
+        border-radius: 10px;
+        padding: 24px 28px;
+        max-width: 420px;
+        width: 90%;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .info-modal.visible {
+        display: block;
+    }
+
+    .info-modal h3 {
+        color: white;
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+
+    .info-modal p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 6px;
+    }
+
+    .info-modal a {
+        color: rgb(100, 180, 255);
+    }
+
+    .info-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 22px;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .info-modal-close:hover {
+        color: rgba(255, 255, 255, 0.55);
     }
 
     .layerDescription {
         color: white;
-        padding-left: 10px;
     }
 
     .legend-dive-site {
@@ -195,6 +274,11 @@
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.379642650273, 47.588783858592] }, "properties": { "icon": "dive-site", "Name": "Seacrest Cove 2", "City": "Seattle", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.120155394451, 47.4346011019208] }, "properties": { "icon": "dive-site", "Name": "Sund Rock", "City": "Hoodsport", "Access": "Shore", "Skill": "Intermediate", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Private Property" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.590855691488, 47.1769081411819] }, "properties": { "icon": "dive-site", "Name": "Sunnyside Beach Park", "City": "Stelicoom", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Paid Parking" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.382247, 47.815606] }, "properties": { "icon": "dive-site", "Name": "Edmonds Underwater Park", "City": "Edmonds", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.427775, 48.139861] }, "properties": { "icon": "dive-site", "Name": "Ediz Hook", "City": "Port Angeles", "Access": "Shore", "Skill": "Intermediate", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.714356, 48.165303] }, "properties": { "icon": "dive-site", "Name": "Salt Creek", "City": "Port Angeles", "Access": "Shore", "Skill": "Advanced", "Hazards": "Unknown", "Fees": "No", "Fees_Desc": "NA" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-119.75528, 46.90722] }, "properties": { "icon": "dive-site", "Name": "Missile Silo", "City": "Royal City", "Access": "Shore", "Skill": "Advanced", "Hazards": "Unknown", "Fees": "Yes", "Fees_Desc": "Course" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-120.027622, 47.843086] }, "properties": { "icon": "dive-site", "Name": "Lake Chelan", "City": "Chelan", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "no", "Fees_Desc": "NA" } },
 
             // --- DIVE SHOPS ---
             // Replace coordinates and properties with verified shop data
@@ -202,7 +286,8 @@
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.1786, 47.6193] }, "properties": { "icon": "dive-shop", "Name": "Underwater Sports", "Address": "12003 NE 12th St #59, Bellevue, WA 98005", "Phone": "(425) 454-5168", "Website": "https://www.underwatersports.com/" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3073, 47.8209] }, "properties": { "icon": "dive-shop", "Name": "Dive Commercial International", "Address": "19004 Hwy 99, Lynnwood, WA 98036", "Phone": "(206) 784-5050", "Website": "https://www.divecommercial.com/" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.4443, 47.2529] }, "properties": { "icon": "dive-shop", "Name": "Tacoma SCUBA", "Address": "1602 Center St C, Tacoma, WA 98409", "Phone": "(253) 238-1754", "Website": "https://www.tacomascuba.com/" } },
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.4307, 48.1184] }, "properties": { "icon": "dive-shop", "Name": "Strait Scuba", "Address": "718 Elizabeth Pl, Port Angeles, WA 98362", "Phone": "(360) 808-2987", "Website": "https://www.facebook.com/p/Strait-Scuba-100063619098795/" } }
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.4307, 48.1184] }, "properties": { "icon": "dive-shop", "Name": "Strait Scuba", "Address": "718 Elizabeth Pl, Port Angeles, WA 98362", "Phone": "(360) 808-2987", "Website": "https://www.facebook.com/p/Strait-Scuba-100063619098795/" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3863, 47.5814] }, "properties": { "icon": "dive-shop", "Name": "Seattle Dive Tours", "Address": "4217 Admiral Way SW, Seattle, WA 98116", "Phone": "(206) 265 0006", "Website": "https://seattledivetours.com/" } }
         ]
     }
 
@@ -215,7 +300,7 @@
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/cody-chaves/cmpejzuik001601sn9djz0r7e',
-        center: [-122.5, 47.5],
+        center: [-125, 47.5],
         zoom: 7,
         minZoom: 5.5,
         maxBounds: bounds
@@ -323,6 +408,14 @@
         console.log(map.getZoom());
     });
 
+    function openInfoModal() {
+        document.getElementById('infoModal').classList.add('visible');
+    }
+
+    function closeInfoModal() {
+        document.getElementById('infoModal').classList.remove('visible');
+    }
+
     var state = { panelOpen: true };
 
     function panelSelect(e) {
@@ -350,6 +443,21 @@
         <img src="images/store.png" width="20" height="20" class="legend-dive-shop">
         <span class="layerDescription">Dive Shop</span>
     </div>
+    <div class="info-btn-cell">
+        <button class="info-btn" onclick="openInfoModal()" title="Sources & Copyright">ℹ</button>
+    </div>
+</div>
+
+<!-- sources & copyright modal -->
+<div class="info-modal" id="infoModal">
+    <button class="info-modal-close" onclick="closeInfoModal()">&times;</button>
+    <h3>Sources &amp; Copyright</h3>
+    <p><strong>Data</strong><br><a href="https://www.arcgis.com/home/item.html?id=db8ae03a5df444f2b10f8aa0ccc1b261" title="Washington Dive Sites">Washington Dive Sites and Shops layers by kja5702_pennstate in ArcGIS Online</a> (Accessed May 13th, 2026)</p>
+    <p><strong>Icons</strong><br>Dive shop: <a href="https://www.flaticon.com/free-icons/restaurant" title="restaurant icons">Restaurant icons created by fjstudio - Flaticon</a>
+    Diver: <a href="https://www.flaticon.com/free-icons/diver" title="diver icons">Diver icons created by IYIKON - Flaticon</a></p>
+    <p style="margin-top: 16px; font-size: 11px; color: rgba(255,255,255,0.45);">
+        Washington Dive Map © 2026 by Cody Chaves is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+    </p>
 </div>
 
 <!-- map description panel -->
