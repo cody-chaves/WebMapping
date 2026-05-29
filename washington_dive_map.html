@@ -41,7 +41,7 @@
     }
 
     .filter-group input[type='checkbox'] + label {
-        background-color: #70b0dd;
+        background-color: transparent;
         display: block;
         cursor: pointer;
         padding: 10px;
@@ -49,13 +49,13 @@
     }
 
     .filter-group input[type='checkbox'] + label {
-        background-color: #3386c0;
+        background-color: transparent;
         text-transform: capitalize;
     }
 
     .filter-group input[type='checkbox'] + label:hover,
     .filter-group input[type='checkbox']:checked + label {
-        background-color: #4ea0da;
+        background-color: rgba(80, 80, 100, .90);
     }
 
     .filter-group input[type='checkbox']:checked + label:before {
@@ -71,6 +71,7 @@
         height: 22px;
         border-radius: 50%;
         cursor: pointer;
+        box-shadow: 0 0 8px 4px rgba(0, 150, 255, 0.7);
     }
 
     .marker-dive-shop {
@@ -80,6 +81,7 @@
         height: 22px;
         border-radius: 10%;
         cursor: pointer;
+        box-shadow: 0 0 8px 4px rgba(255,140, 0, 0.7);
     }
 
     /* Used by the checkbox toggle to hide markers - classList pattern from Custon_marker_example.html */
@@ -112,7 +114,7 @@
         z-index: 2;
         width: 300px;
         height: 40px;
-        background: rgba(80, 80, 80, .75);
+        background: rgba(80, 80, 100, .90);
         transition: width 2s, height 2s;
         overflow: hidden;
         border-radius: 7px;
@@ -132,7 +134,7 @@
         z-index: 2;
         width: 300px;
         height: 40px;
-        background: rgba(80, 80, 80, .75);
+        background: rgba(80, 80, 100, .90);
         border-radius: 7px;
     }
 
@@ -147,6 +149,16 @@
     .layerDescription {
         color: white;
         padding-left: 10px;
+    }
+
+    .legend-dive-site {
+        border-radius: 50%;
+        box-shadow: 0 0 8px 4px rgba(0, 150, 255, 0.7);
+    }
+
+    .legend-dive-shop {
+        border-radius: 10%;
+        box-shadow: 0 0 8px 4px rgba(255, 140, 0, 0.7);
     }
 </style>
 
@@ -182,11 +194,11 @@
 
             // --- DIVE SHOPS ---
             // Replace coordinates and properties with verified shop data
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3321, 47.6062] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Seattle", "Phone": "", "Website": "" } },
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.1968, 47.5944] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Bellevue", "Phone": "", "Website": "" } },
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3073, 47.8209] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Lynnwood", "Phone": "", "Website": "" } },
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.4443, 47.2529] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Tacoma", "Phone": "", "Website": "" } },
-            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.4307, 48.1184] }, "properties": { "icon": "dive-shop", "Name": "Dive Shop Name", "City": "Port Angeles", "Phone": "", "Website": "" } }
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3834, 47.8116] }, "properties": { "icon": "dive-shop", "Name": "Underwater Sports", "Address": "264 Railroad Ave, Edmonds, WA 98020", "Phone": "(425) 771-6322", "Website": "https://www.underwatersports.com/" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.1786, 47.6193] }, "properties": { "icon": "dive-shop", "Name": "Underwater Sports", "Address": "12003 NE 12th St #59, Bellevue, WA 98005", "Phone": "(425) 454-5168", "Website": "https://www.underwatersports.com/" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3073, 47.8209] }, "properties": { "icon": "dive-shop", "Name": "Dive Commercial International", "Address": "19004 Hwy 99, Lynnwood, WA 98036", "Phone": "(206) 784-5050", "Website": "https://www.divecommercial.com/" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.4443, 47.2529] }, "properties": { "icon": "dive-shop", "Name": "Tacoma SCUBA", "Address": "1602 Center St C, Tacoma, WA 98409", "Phone": "(253) 238-1754", "Website": "https://www.tacomascuba.com/" } },
+            { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-123.4307, 48.1184] }, "properties": { "icon": "dive-shop", "Name": "Strait Scuba", "Address": "718 Elizabeth Pl, Port Angeles, WA 98362", "Phone": "(360) 808-2987", "Website": "https://www.facebook.com/p/Strait-Scuba-100063619098795/" } }
         ]
     }
 
@@ -224,16 +236,14 @@
         var description;
         if (symbol === 'dive-site') {
             description = '<strong>' + props.Name + '</strong>' +
-                '<br>City: ' + props.City +
-                '<br>Access: ' + props.Access +
                 '<br>Skill: ' + props.Skill +
-                '<br>Hazards: ' + props.Hazards +
+                '<br>Access: ' + props.Access +
                 '<br>Fees: ' + props.Fees_Desc;
         } else {
             description = '<strong>' + props.Name + '</strong>' +
-                '<br>City: ' + props.City +
+                '<br>Address: ' + props.Address +
                 '<br>Phone: ' + props.Phone +
-                '<br>Website: ' + props.Website;
+                '<br>Website: <a href="' + props.Website + '" target="_blank" rel="noopener">' + props.Website + '</a>';
         }
 
         // make a marker for each feature and add it to the map
@@ -293,7 +303,7 @@
         else if (z < 10)  size = '32px';
         else if (z < 11)  size = '38px';
         else if (z < 12)  size = '46px';
-        else if (z < 14)  size = '55px';
+        else if (z < 14)  size = '58px';
         else              size = '70px';
 
         ['dive-site', 'dive-shop'].forEach(function(type) {
@@ -329,11 +339,11 @@
 <!-- map legend -->
 <div class="LegendContainer">
     <div class="legendItem">
-        <img src="images/diver.png" width="20" height="20">
+        <img src="images/diver.png" width="20" height="20" class="legend-dive-site">
         <span class="layerDescription">Dive Site</span>
     </div>
     <div class="legendItem">
-        <img src="images/store.png" width="20" height="20">
+        <img src="images/store.png" width="20" height="20" class="legend-dive-shop">
         <span class="layerDescription">Dive Shop</span>
     </div>
 </div>
@@ -344,7 +354,7 @@
     <hr/>
     <h4>WASHINGTON DIVE SITES</h4>
     <p style="margin-left: 10px; margin-right: 10px;">
-        This map shows common dive sites and nearby dive shops in Washington State. Click a marker to see details including skill level, access type, and fees. Use the toggle in the top right to show or hide what you are looking for.
+        This map shows common dive sites and nearby dive shops in Washington State. Click a marker to see details including skill level, access type, skill level and fees. Use the toggle in the top right to show or hide what you are looking for.
     </p>
 </div>
 
