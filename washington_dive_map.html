@@ -3,30 +3,35 @@
 <head>
     <meta charset="utf-8">
     <title>Washington Dive Sites and Dive Shops</title>
+    <!--Keeps maps correct size on phones-->
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js"></script>
+    <!--Bootstrap used for arrow icons-->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
+        /*Gets rid of white space and makes map fill screen*/
         body { margin: 0; padding: 0; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
     </style>
 </head>
 <body>
 <style>
-    /* Filter toggle - from example_point_selection.html */
+
+    /* Filter toggle from assignment 5 */
     .filter-group {
-        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font: 14px/22px 'Helvetica Neue', Arial, sans-serif;
         font-weight: 600;
         position: absolute;
         top: 10px;
         right: 10px;
         z-index: 1;
         border-radius: 3px;
-        width: 120px;
+        width: 148px;
         color: #fff;
     }
 
+    /* Rounds corners*/
     .filter-group input[type='checkbox']:first-child + label {
         border-radius: 3px 3px 0 0;
     }
@@ -36,29 +41,35 @@
         border: none;
     }
 
+    /* Hides checkbox*/
     .filter-group input[type='checkbox'] {
         display: none;
     }
 
+    /* Styling for box */
     .filter-group input[type='checkbox'] + label {
         background-color: rgba(80, 80, 100, .90);
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         cursor: pointer;
         padding: 10px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-        text-transform: capitalize;
     }
 
-    .filter-group input[type='checkbox'] + label:hover,
-    .filter-group input[type='checkbox']:checked + label {
-        background-color: rgba(80, 80, 100, .90);
+    .filter-group label img {
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
     }
 
+    /*If checkbox checked add check before label*/
     .filter-group input[type='checkbox']:checked + label:before {
         content: '✔';
-        margin-right: 5px;
+        margin-right: 3px;
     }
 
+    /* Check colors*/
     #toggle-dive-site:checked + label:before {
         color: rgb(0, 150, 255);
     }
@@ -67,7 +78,8 @@
         color: rgb(255, 140, 0);
     }
 
-    /* Custom marker styles - from Custon_marker_example.html */
+    /* Based on custom marker class example*/
+    /*Dive site marker*/
     .marker-dive-site {
         background-image: url('images/diver.png');
         background-size: cover;
@@ -77,7 +89,7 @@
         cursor: pointer;
         box-shadow: 0 0 8px 4px rgba(0, 150, 255, 0.7);
     }
-
+    /*Dive shop marker*/
     .marker-dive-shop {
         background-image: url('images/store.png');
         background-size: cover;
@@ -88,32 +100,33 @@
         box-shadow: 0 0 8px 4px rgba(255,140, 0, 0.7);
     }
 
-    /* Used by the checkbox toggle to hide markers - classList pattern from Custon_marker_example.html */
+    /* Used to hide markers */
     .hidden {
         display: none;
     }
 
-    .mapboxgl-popup {
-        max-width: 200px;
-    }
-
+    /* Center text and font*/
     .mapboxgl-popup-content {
         text-align: center;
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
+    /* Set <p> text to white*/
     p {
         color: white;
     }
 
+    /* Set <h4> white and move from edge */
     h4 {
         color: white;
         margin-left: 10px;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
+    /*Info panel from assignment 3*/
     .descriptionPanel {
         position: absolute;
-        bottom: 65px;
+        bottom: 20px;
         right: 10px;
         z-index: 2;
         width: 300px;
@@ -124,6 +137,7 @@
         border-radius: 7px;
     }
 
+    /*Bootstrap arrow*/
     .chevron {
         position: relative;
         margin-left: 45%;
@@ -131,34 +145,15 @@
         color: white;
     }
 
-    .LegendContainer {
+    /*Info button placement*/
+    .info-btn-topleft {
         position: absolute;
-        bottom: 20px;
-        right: 10px;
-        z-index: 2;
-        width: 300px;
-        height: 40px;
-        background: rgba(80, 80, 100, .90);
-        border-radius: 7px;
-        display: flex;
-        align-items: center;
+        top: 10px;
+        left: 10px;
+        z-index: 1;
     }
 
-    .info-btn-cell {
-        flex: 0 0 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .legendItem {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-    }
-
+    /*Info button size and styling*/
     .info-btn {
         width: 24px;
         height: 24px;
@@ -166,7 +161,7 @@
         background: rgba(255, 255, 255, 0.15);
         border: 2px solid rgba(255, 255, 255, 0.75);
         color: white;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: bold;
         line-height: 20px;
         text-align: center;
@@ -174,10 +169,12 @@
         cursor: pointer;
     }
 
+    /*Lighten info button when hover*/
     .info-btn:hover {
         background: rgba(255, 255, 255, 0.3);
     }
 
+    /* Copyright and sources popup*/
     .info-modal {
         display: none;
         position: fixed;
@@ -193,16 +190,20 @@
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
+    /* Makes popup appear*/
     .info-modal.visible {
         display: block;
     }
 
+    /* Heading style*/
     .info-modal h3 {
         color: white;
         margin-top: 0;
         margin-bottom: 16px;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
+    /* Popup body text*/
     .info-modal p {
         color: rgba(255, 255, 255, 0.85);
         font-size: 13px;
@@ -210,10 +211,12 @@
         margin-bottom: 6px;
     }
 
+    /* To make links blue*/
     .info-modal a {
         color: rgb(100, 180, 255);
     }
 
+    /* Close button*/
     .info-modal-close {
         position: absolute;
         top: 10px;
@@ -226,14 +229,7 @@
         line-height: 1;
     }
 
-    .info-modal-close:hover {
-        color: rgba(255, 255, 255, 0.55);
-    }
-
-    .layerDescription {
-        color: white;
-    }
-
+    /*Styles both of the icons*/
     .legend-dive-site {
         border-radius: 50%;
         box-shadow: 0 0 8px 4px rgba(0, 150, 255, 0.7);
@@ -247,15 +243,18 @@
 
 <div id="map"></div>
 
-<!-- add filter group nav here -->
+<!-- Container for checkboxes -->
 <nav id="filter-group" class="filter-group"></nav>
+
+<!-- Makes info button clickable-->
+<button class="info-btn info-btn-topleft" onclick="openInfoModal()" title="Sources & Copyright">ℹ</button>
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiY29keS1jaGF2ZXMiLCJhIjoiY21uZjZtbXlnMDcyeDJ2b3B3MjN2OGJ1aSJ9.4jke3lFyjjjJiGEQyL_r1A';
 
-    // ADD THE DATA HERE
-    // Each feature has an "icon" property set to either "dive-site" or "dive-shop".
-    // This value is used to group features into two toggleable layers.
+
+    // Each feature has an icon set to either dive-site or dive-shop
+    // This is used to group features into two toggleable layers.
     var places = {
         "type": "FeatureCollection",
         "features": [
@@ -281,7 +280,6 @@
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-120.027622, 47.843086] }, "properties": { "icon": "dive-site", "Name": "Lake Chelan", "City": "Chelan", "Access": "Shore", "Skill": "Beginner", "Hazards": "Unknown", "Fees": "no", "Fees_Desc": "NA" } },
 
             // --- DIVE SHOPS ---
-            // Replace coordinates and properties with verified shop data
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3834, 47.8116] }, "properties": { "icon": "dive-shop", "Name": "Underwater Sports", "Address": "264 Railroad Ave, Edmonds, WA 98020", "Phone": "(425) 771-6322", "Website": "https://www.underwatersports.com/" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.1786, 47.6193] }, "properties": { "icon": "dive-shop", "Name": "Underwater Sports", "Address": "12003 NE 12th St #59, Bellevue, WA 98005", "Phone": "(425) 454-5168", "Website": "https://www.underwatersports.com/" } },
             { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-122.3073, 47.8209] }, "properties": { "icon": "dive-shop", "Name": "Dive Commercial International", "Address": "19004 Hwy 99, Lynnwood, WA 98036", "Phone": "(206) 784-5050", "Website": "https://www.divecommercial.com/" } },
@@ -291,37 +289,35 @@
         ]
     }
 
+    // Finds and stores filtergroup
     var filterGroup = document.getElementById('filter-group');
-    var bounds = [
-        [-124.849, 45.543], // Southwest coordinates
-        [-116.916, 49.003]  // Northeast coordinates
-    ];
 
+    // Create map
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/cody-chaves/cmpejzuik001601sn9djz0r7e',
-        center: [-125, 47.5],
+        center: [-124, 47.5],
         zoom: 7,
         minZoom: 5.5,
-        maxBounds: bounds
+        maxBounds: [[-124.849, 45.543], [-116.916, 49.003]]
     });
 
-    // Store markers by type so the checkboxes can show/hide them
+    // Store markers by site/shop so the checkboxes can show and hide them
     var markerGroups = { 'dive-site': [], 'dive-shop': [] };
 
-    // Track which checkbox types have already been added to the filter group
+    // Prevents duplicate toggles from being added to filter
     var seenSymbols = {};
 
-    // Add markers to map, from the geojson file - from Custon_marker_example.html
+    // Add markers to map, adapted from custom marker example
     for (const feature of places.features) {
         const symbol = feature.properties['icon'];
         const props = feature.properties;
 
-        // create a HTML element for this feature
+        // create a div for marker icon
         const el = document.createElement('div');
         el.className = symbol === 'dive-site' ? 'marker-dive-site' : 'marker-dive-shop';
 
-        // build popup content based on feature type
+        // builds popup content based on feature type
         var description;
         if (symbol === 'dive-site') {
             description = '<strong>' + props.Name + '</strong>' +
@@ -340,36 +336,29 @@
             .setLngLat(feature.geometry.coordinates)
             .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(description))
             .addTo(map);
-
         markerGroups[symbol].push(marker);
 
-        // add hover class to each marker via DOM events - from Custon_marker_example.html
-        const markerElement = marker.getElement();
-
-        markerElement.addEventListener('mouseenter', () => {
-            markerElement.classList.add('hover');
-        });
-
-        markerElement.addEventListener('mouseleave', () => {
-            markerElement.classList.remove('hover');
-        });
-
-        // Add checkbox and label elements for this type if not already added - from example_point_selection.html
+        // Add checkbox and label elements for this type if not already added
         if (!seenSymbols[symbol]) {
             seenSymbols[symbol] = true;
-
+            
+            // Creates checkbox element
             var input = document.createElement('input');
             input.type = 'checkbox';
             input.id = 'toggle-' + symbol;
             input.checked = true;
             filterGroup.appendChild(input);
 
+            // Creates filter functionality and layout
             var label = document.createElement('label');
             label.setAttribute('for', 'toggle-' + symbol);
-            label.textContent = symbol;
+            var displayName = symbol === 'dive-site' ? 'Dive Site' : 'Dive Shop';
+            var iconSrc = symbol === 'dive-site' ? 'images/diver.png' : 'images/store.png';
+            var iconClass = symbol === 'dive-site' ? 'legend-dive-site' : 'legend-dive-shop';
+            label.innerHTML = displayName + ' <img src="' + iconSrc + '" width="16" height="16" class="' + iconClass + '" style="vertical-align:middle;">';
             filterGroup.appendChild(label);
 
-            // When the checkbox changes, add or remove the hidden class on each marker in the group
+            // When the checkbox changes, add or remove the hidden class
             input.addEventListener('change', function (e) {
                 markerGroups[symbol].forEach(function (m) {
                     if (e.target.checked) {
@@ -382,6 +371,7 @@
         }
     }
 
+    // When zoom ends set point size
     map.on('zoomend', function() {
         var z = map.getZoom();
         var size;
@@ -403,11 +393,12 @@
             });
         });
     });
-
+    // to see zoom in log
     map.on('zoom', function() {
         console.log(map.getZoom());
     });
 
+    // Show and hide popup
     function openInfoModal() {
         document.getElementById('infoModal').classList.add('visible');
     }
@@ -416,8 +407,10 @@
         document.getElementById('infoModal').classList.remove('visible');
     }
 
+    // Tracks whether open or closed
     var state = { panelOpen: true };
 
+    // Toggles description panel
     function panelSelect(e) {
         if (state.panelOpen) {
             document.getElementById('descriptionPanel').style.height = '26px';
@@ -433,22 +426,7 @@
 </script>
 
 
-<!-- map legend -->
-<div class="LegendContainer">
-    <div class="legendItem">
-        <img src="images/diver.png" width="20" height="20" class="legend-dive-site">
-        <span class="layerDescription">Dive Site</span>
-    </div>
-    <div class="legendItem">
-        <img src="images/store.png" width="20" height="20" class="legend-dive-shop">
-        <span class="layerDescription">Dive Shop</span>
-    </div>
-    <div class="info-btn-cell">
-        <button class="info-btn" onclick="openInfoModal()" title="Sources & Copyright">ℹ</button>
-    </div>
-</div>
-
-<!-- sources & copyright modal -->
+<!-- sources & copyright popup -->
 <div class="info-modal" id="infoModal">
     <button class="info-modal-close" onclick="closeInfoModal()">&times;</button>
     <h3>Sources &amp; Copyright</h3>
@@ -466,7 +444,7 @@
     <hr/>
     <h4>WASHINGTON DIVE SITES</h4>
     <p style="margin-left: 10px; margin-right: 10px;">
-        This map shows common dive sites and nearby dive shops in Washington State. Click a marker to see details including skill level, access type, skill level and fees. Use the toggle in the top right to show or hide what you are looking for.
+        This map shows common dive sites and nearby dive shops in Washington State. Click a marker to see details including skill level, access type, and fees. Use the toggle in the top right to show or hide what you are looking for.
     </p>
 </div>
 
